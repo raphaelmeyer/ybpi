@@ -19,8 +19,9 @@ RUN useradd -ms /bin/bash user
 ENV HOME /home/user
 USER user
 
-RUN mkdir -p /home/user/yocto
-WORKDIR /home/user/yocto
+RUN mkdir -p /home/user
+WORKDIR /home/user
 
-ENTRYPOINT ["/bin/bash", "-c", "source /opt/poky/1.8/environment-setup-arm1176jzfshf-vfp-poky-linux-gnueabi"]
+# TODO wrapper script in ENTRYPOINT ?
+# RUN /bin/bash -c "source /opt/poky/1.8/environment-setup-arm1176jzfshf-vfp-poky-linux-gnueabi"
 
