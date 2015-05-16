@@ -4,7 +4,7 @@ MAINTAINER Raphael Meyer <raphael.akira.meyer@gmail.com>
 
 # install tools
 RUN apt-get update && apt-get install -y \
-  cmake \
+  cmake
 
 # setup user
 RUN useradd -ms /bin/bash user
