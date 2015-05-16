@@ -6,7 +6,8 @@ yocto_release = fido
 
 makepath = $(abspath $(lastword $(MAKEFILE_LIST)))
 
-toolchain = poky-glibc-x86_64-rpi-hwup-image-arm1176jzfshf-vfp-toolchain-1.8.sh
+toolchain = workspace/rpi-build/tmp/deploy/sdk/poky-glibc-x86_64-rpi-hwup-image-arm1176jzfshf-vfp-toolchain-1.8.sh
+image = workspace/rpi-build/tmp/deploy/images/
 
 ################################################################################
 
