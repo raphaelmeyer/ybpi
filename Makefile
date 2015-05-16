@@ -4,7 +4,7 @@ yocto_release = fido
 
 ################################################################################
 
-makepath = $(abspath $(lastword $(MAKEFILE_LIST)))
+makepath = $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 
 toolchain = workspace/rpi-build/tmp/deploy/sdk/poky-glibc-x86_64-rpi-hwup-image-arm1176jzfshf-vfp-toolchain-1.8.sh
 image = workspace/rpi-build/tmp/deploy/images/
@@ -15,14 +15,14 @@ all: ybpi-toolchain/.done
 
 ################################################################################
 
-ybpi-toolchain/.done: ybpi-toolchain
-ybpi-base/.done: ybpi-base
+ybpi-toolchain: ybpi-toolchain/.done
+ybpi-base: ybpi-base/.done
 
-ybpi-toolchain: ybpi-toolchain/Dockerfile # $(toolchain)
+ybpi-toolchain/.done: ybpi-toolchain/Dockerfile $(toolchain)
 	docker build -t ybpi-base ybpi-base
 	touch ybpi-toolchain/.done
 
-ybpi-base: ybpi-base/Dockerfile
+ybpi-base/.done: ybpi-base/Dockerfile
 	docker build -t ybpi-base ybpi-base
 	touch ybpi-base/.done
 
@@ -55,4 +55,5 @@ clean:
 	rm -rf workspace
 
 .PHONY: clean update
+.PHONY: ybpi-toolchain ybpi-base
 
