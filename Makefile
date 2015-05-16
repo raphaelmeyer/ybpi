@@ -26,10 +26,10 @@ ybpi-base/.done: ybpi-base/Dockerfile
 	docker build -t ybpi-base ybpi-base
 	touch ybpi-base/.done
 
-$(toolchain): ybpi-base/.done scripts/ybpi-toolchain.sh
+$(toolchain): ybpi-base/.done scripts/ybpi-toolchain.sh yocto
 	docker run --rm \
 	           -v $(makepath)/workspace:/home/user/yocto \
-	           -v $(makepath)/scripts/ybpi-toolchain.sh:/tmp/ybpi-toolchain.sh \
+	           -v $(makepath)/scripts:/tmp/scripts \
 	           ybpi-base /bin/bash -c "/tmp/ybpi-toolchain.sh"
 
 yocto: workspace/poky/.git workspace/meta-raspberrypi/.git
