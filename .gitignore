@@ -4,3 +4,6 @@ workspace
 *.swp
 *.done
 
+ybpi-toolchain/image.rpi-sdimg
+ybpi-toolchain/toolchain-install.sh
+

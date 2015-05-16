@@ -7,7 +7,7 @@ yocto_release = fido
 makepath = $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 
 toolchain = workspace/rpi-build/tmp/deploy/sdk/poky-glibc-x86_64-rpi-hwup-image-arm1176jzfshf-vfp-toolchain-1.8.sh
-image = workspace/rpi-build/tmp/deploy/images/
+image = workspace/rpi-build/tmp/deploy/images/raspberrypi/rpi-hwup-image-raspberrypi.rpi-sdimg
 
 ################################################################################
 
@@ -19,6 +19,8 @@ ybpi-toolchain: ybpi-toolchain/.done
 ybpi-base: ybpi-base/.done
 
 ybpi-toolchain/.done: ybpi-toolchain/Dockerfile $(toolchain)
+	cp $(toolchain) ybpi-toolchain/toolchain-install.sh
+	cp $(image) ybpi-toolchain/image.rpi-sdimg
 	docker build -t ybpi-toolchain ybpi-toolchain
 	touch ybpi-toolchain/.done
 
