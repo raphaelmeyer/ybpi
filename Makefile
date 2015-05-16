@@ -8,6 +8,15 @@ makepath = $(abspath $(lastword $(MAKEFILE_LIST)))
 
 toolchain = poky-glibc-x86_64-rpi-hwup-image-arm1176jzfshf-vfp-toolchain-1.8.sh
 
+################################################################################
+
+all: ybpi-toolchain/.done
+
+################################################################################
+
+ybpi-toolchain/.done: ybpi-toolchain
+ybpi-base/.done: ybpi-base
+
 ybpi-toolchain: ybpi-toolchain/Dockerfile # $(toolchain)
 	docker build -t ybpi-base ybpi-base
 	touch ybpi-toolchain/.done
@@ -16,7 +25,7 @@ ybpi-base: ybpi-base/Dockerfile
 	docker build -t ybpi-base ybpi-base
 	touch ybpi-base/.done
 
-$(toolchain): ybpi-base scripts/ybpi-toolchain.sh
+$(toolchain): ybpi-base/.done scripts/ybpi-toolchain.sh
 	docker run --rm \
 	           -v $(makepath)/workspace:/home/user/yocto \
 	           -v $(makepath)/scripts/ybpi-toolchain.sh:/tmp/ybpi-toolchain.sh \
