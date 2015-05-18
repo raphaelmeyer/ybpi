@@ -20,7 +20,6 @@ ybpi-base: ybpi-base/.done
 
 ybpi-toolchain/.done: ybpi-toolchain/Dockerfile $(toolchain)
 	cp $(toolchain) ybpi-toolchain/toolchain-install.sh
-	cp $(image) ybpi-toolchain/image.rpi-sdimg
 	docker build -t ybpi-toolchain ybpi-toolchain
 	touch ybpi-toolchain/.done
 

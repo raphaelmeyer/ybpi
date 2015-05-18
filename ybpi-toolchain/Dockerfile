@@ -11,8 +11,8 @@ RUN apt-get update && apt-get install -y \
 RUN apt-get update && apt-get install --no-install-recommends -y cmake
 
 COPY toolchain-install.sh /tmp/
-COPY image.rpi-sdimg /opt/image/
 RUN bash /tmp/toolchain-install.sh -y
+RUN rm -rf /tmp/toolchain-install.sh
 
 # setup user
 RUN useradd -ms /bin/bash user
@@ -22,6 +22,8 @@ USER user
 RUN mkdir -p /home/user
 WORKDIR /home/user
 
-# TODO wrapper script in ENTRYPOINT ?
-# RUN /bin/bash -c "source /opt/poky/1.8/environment-setup-arm1176jzfshf-vfp-poky-linux-gnueabi"
+COPY ybpi-entrypoint.sh /
+
+ENTRYPOINT ["/ybpi-entrypoint.sh"]
+CMD ["/bin/bash"]
 
