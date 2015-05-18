@@ -18,7 +18,7 @@ all: ybpi-toolchain/.done
 ybpi-toolchain: ybpi-toolchain/.done
 ybpi-base: ybpi-base/.done
 
-ybpi-toolchain/.done: ybpi-toolchain/Dockerfile $(toolchain)
+ybpi-toolchain/.done: ybpi-toolchain/Dockerfile $(toolchain) ybpi-toolchain/ybpi-entrypoint.sh
 	cp $(toolchain) ybpi-toolchain/toolchain-install.sh
 	docker build -t ybpi-toolchain ybpi-toolchain
 	touch ybpi-toolchain/.done

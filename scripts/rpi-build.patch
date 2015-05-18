@@ -1,6 +1,6 @@
-diff -rupN rpi-build/conf/bblayers.conf rpi-build-patch/conf/bblayers.conf
---- rpi-build/conf/bblayers.conf	2015-05-14 22:27:20.134265510 +0200
-+++ rpi-build-patch/conf/bblayers.conf	2015-05-14 22:29:36.220777976 +0200
+diff -rupN rpi-build-original/conf/bblayers.conf rpi-build-new/conf/bblayers.conf
+--- rpi-build-original/conf/bblayers.conf	2015-05-18 19:34:06.685890603 +0000
++++ rpi-build-new/conf/bblayers.conf	2015-05-18 19:37:13.226648414 +0000
 @@ -9,6 +9,7 @@ BBLAYERS ?= " \
    /home/user/yocto/poky/meta \
    /home/user/yocto/poky/meta-yocto \
@@ -9,30 +9,3 @@ diff -rupN rpi-build/conf/bblayers.conf rpi-build-patch/conf/bblayers.conf
    "
  BBLAYERS_NON_REMOVABLE ?= " \
    /home/user/yocto/poky/meta \
-diff -rupN rpi-build/conf/local.conf rpi-build-patch/conf/local.conf
---- rpi-build/conf/local.conf	2015-05-14 22:27:20.134265510 +0200
-+++ rpi-build-patch/conf/local.conf	2015-05-14 22:29:49.580773048 +0200
-@@ -34,7 +34,9 @@
- #MACHINE ?= "edgerouter"
- #
- # This sets the default machine to be qemux86 if no other machine is selected:
--MACHINE ??= "qemux86"
-+#MACHINE ??= "qemux86"
-+
-+MACHINE ?= "raspberrypi"
- 
- #
- # Where to place downloads
-@@ -221,9 +223,9 @@ BB_DISKMON_DIRS = "\
- # By default qemu will build with a builtin VNC server where graphical output can be
- # seen. The two lines below enable the SDL backend too. This assumes there is a
- # libsdl library available on your build system.
--PACKAGECONFIG_append_pn-qemu-native = " sdl"
--PACKAGECONFIG_append_pn-nativesdk-qemu = " sdl"
--ASSUME_PROVIDED += "libsdl-native"
-+#PACKAGECONFIG_append_pn-qemu-native = " sdl"
-+#PACKAGECONFIG_append_pn-nativesdk-qemu = " sdl"
-+#ASSUME_PROVIDED += "libsdl-native"
- 
- 
- # CONF_VERSION is increased each time build/conf/ changes incompatibly and is used to
