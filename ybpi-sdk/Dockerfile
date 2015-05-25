@@ -19,7 +19,8 @@ RUN useradd -ms /bin/bash user
 ENV HOME /home/user
 USER user
 
-RUN mkdir -p /home/user
+RUN mkdir -p /home/user/data && chown -R user:user /home/user
+RUN mkdir -p /workspace && chown -R user:user /workspace
 
 VOLUME ["/home/user/data", "/workspace"]
 WORKDIR /workspace

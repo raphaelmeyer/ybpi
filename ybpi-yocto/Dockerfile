@@ -22,6 +22,7 @@ ENV HOME /home/user
 USER user
 
 RUN mkdir -p /home/user
+RUN mkdir -p /yocto && chown -R user:user /yocto
 
 VOLUME ["/yocto"]
 WORKDIR /yocto
