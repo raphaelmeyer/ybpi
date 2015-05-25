@@ -21,6 +21,8 @@ RUN useradd -ms /bin/bash user
 ENV HOME /home/user
 USER user
 
-RUN mkdir -p /home/user/yocto
-WORKDIR /home/user/yocto
+RUN mkdir -p /home/user
+
+VOLUME["/yocto"]
+WORKDIR /yocto
 

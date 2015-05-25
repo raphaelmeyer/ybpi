@@ -20,10 +20,11 @@ ENV HOME /home/user
 USER user
 
 RUN mkdir -p /home/user
-WORKDIR /home/user
+
+VOLUME["/home/user/data", "/workspace"]
+WORKDIR /workspace
 
 COPY ybpi-entrypoint.sh /
-
 ENTRYPOINT ["/ybpi-entrypoint.sh"]
 CMD ["/bin/bash"]
 
