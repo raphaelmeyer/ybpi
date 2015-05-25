@@ -2,7 +2,6 @@ FROM ubuntu:15.04
 
 MAINTAINER Raphael Meyer <raphael.akira.meyer@gmail.com>
 
-# install tools
 RUN apt-get update && apt-get install -y \
   bzip2 \
   chrpath \
@@ -16,13 +15,13 @@ RUN apt-get update && apt-get install -y \
   texinfo \
   wget
 
-# setup user
 RUN useradd -ms /bin/bash user
 ENV HOME /home/user
-USER user
 
 RUN mkdir -p /home/user
 RUN mkdir -p /yocto && chown -R user:user /yocto
+
+USER user
 
 VOLUME ["/yocto"]
 WORKDIR /yocto
