@@ -15,13 +15,7 @@ RUN apt-get update && apt-get install -y \
   texinfo \
   wget
 
-RUN useradd -ms /bin/bash user
-ENV HOME /home/user
-
-RUN mkdir -p /home/user
-RUN mkdir -p /yocto && chown -R user:user /yocto
-
-USER user
+RUN mkdir -p /data /yocto
 
 VOLUME ["/yocto"]
 WORKDIR /yocto

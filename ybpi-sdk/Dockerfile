@@ -13,15 +13,9 @@ COPY toolchain-install.sh /tmp/
 RUN bash /tmp/toolchain-install.sh -y
 RUN rm -rf /tmp/toolchain-install.sh
 
-RUN useradd -ms /bin/bash user
-ENV HOME /home/user
+RUN mkdir -p /data /workspace
 
-RUN mkdir -p /home/user/data && chown -R user:user /home/user
-RUN mkdir -p /workspace && chown -R user:user /workspace
-
-USER user
-
-VOLUME ["/home/user/data", "/workspace"]
+VOLUME ["/data", "/workspace"]
 WORKDIR /workspace
 
 COPY ybpi-entrypoint.sh /
