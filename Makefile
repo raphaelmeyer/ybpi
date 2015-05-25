@@ -31,7 +31,7 @@ $(toolchain): ybpi-yocto/.done scripts/ybpi-sdk.sh scripts/local.conf workspace/
 	docker run --rm \
 	           -v $(makepath)/workspace:/home/user/yocto \
 	           -v $(makepath)/scripts:/tmp/scripts \
-	           ybpi-yocto /bin/bash -c "/tmp/scripts/ybpi-sdk.sh"
+	           ybpi-yocto /bin/bash -c "/tmp/scripts/ybpi-build-sdk.sh"
 
 workspace/poky/.git: | workspace
 	cd workspace && git clone http://git.yoctoproject.org/git/poky
