@@ -11,27 +11,27 @@ image = workspace/rpi-build/tmp/deploy/images/raspberrypi/rpi-hwup-image-raspber
 
 ################################################################################
 
-all: ybpi-toolchain/.done
+all: ybpi-sdk/.done
 
 ################################################################################
 
-ybpi-toolchain: ybpi-toolchain/.done
-ybpi-base: ybpi-base/.done
+ybpi-sdk: ybpi-sdk/.done
+ybpi-yocto: ybpi-yocto/.done
 
-ybpi-toolchain/.done: ybpi-toolchain/Dockerfile $(toolchain) ybpi-toolchain/ybpi-entrypoint.sh
-	cp $(toolchain) ybpi-toolchain/toolchain-install.sh
-	docker build -t ybpi-toolchain ybpi-toolchain
-	touch ybpi-toolchain/.done
+ybpi-sdk/.done: ybpi-sdk/Dockerfile $(toolchain) ybpi-sdk/ybpi-entrypoint.sh
+	cp $(toolchain) ybpi-sdk/toolchain-install.sh
+	docker build -t ybpi-sdk ybpi-sdk
+	touch ybpi-sdk/.done
 
-ybpi-base/.done: ybpi-base/Dockerfile
-	docker build -t ybpi-base ybpi-base
-	touch ybpi-base/.done
+ybpi-yocto/.done: ybpi-yocto/Dockerfile
+	docker build -t ybpi-yocto ybpi-yocto
+	touch ybpi-yocto/.done
 
-$(toolchain): ybpi-base/.done scripts/ybpi-toolchain.sh scripts/local.conf workspace/poky/.git workspace/meta-raspberrypi/.git
+$(toolchain): ybpi-yocto/.done scripts/ybpi-sdk.sh scripts/local.conf workspace/poky/.git workspace/meta-raspberrypi/.git
 	docker run --rm \
 	           -v $(makepath)/workspace:/home/user/yocto \
 	           -v $(makepath)/scripts:/tmp/scripts \
-	           ybpi-base /bin/bash -c "/tmp/scripts/ybpi-toolchain.sh"
+	           ybpi-yocto /bin/bash -c "/tmp/scripts/ybpi-sdk.sh"
 
 workspace/poky/.git: | workspace
 	cd workspace && git clone http://git.yoctoproject.org/git/poky
@@ -49,10 +49,10 @@ update:
 	cd workspace/meta-raspberrypi && git pull
 
 clean:
-	rm -rf ybpi-base/.done
-	rm -rf ybpi-toolchain/.done
+	rm -rf ybpi-yocto/.done
+	rm -rf ybpi-sdk/.done
 	rm -rf workspace
 
 .PHONY: clean update
-.PHONY: ybpi-toolchain ybpi-base
+.PHONY: ybpi-sdk ybpi-yocto
 
