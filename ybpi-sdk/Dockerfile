@@ -21,7 +21,7 @@ USER user
 
 RUN mkdir -p /home/user
 
-VOLUME["/home/user/data", "/workspace"]
+VOLUME ["/home/user/data", "/workspace"]
 WORKDIR /workspace
 
 COPY ybpi-entrypoint.sh /

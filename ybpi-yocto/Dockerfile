@@ -23,6 +23,6 @@ USER user
 
 RUN mkdir -p /home/user
 
-VOLUME["/yocto"]
+VOLUME ["/yocto"]
 WORKDIR /yocto
 
