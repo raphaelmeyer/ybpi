@@ -15,8 +15,8 @@ RUN apt-get update && apt-get install -y \
   texinfo \
   wget
 
-RUN mkdir -p /data /yocto
+RUN mkdir -p /data /workspace
 
-VOLUME ["/yocto"]
-WORKDIR /yocto
+VOLUME ["/data", "/workspace"]
+WORKDIR /workspace
 

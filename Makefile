@@ -29,9 +29,10 @@ ybpi-yocto/.done: ybpi-yocto/Dockerfile
 
 $(toolchain): ybpi-yocto/.done scripts/ybpi-build-sdk.sh scripts/local.conf workspace/poky/.git workspace/meta-raspberrypi/.git
 	docker run --rm \
-	           -v $(makepath)/workspace:/yocto \
-	           -v $(makepath)/scripts:/tmp/scripts \
-	           ybpi-yocto /bin/bash -c "/tmp/scripts/ybpi-build-sdk.sh"
+	           --user $(shell id -u):$(shell id -g) \
+	           -v $(makepath)/workspace:/workspace \
+	           -v $(makepath)/scripts:/data \
+	           ybpi-yocto /bin/bash -c "/data/ybpi-build-sdk.sh"
 
 workspace/poky/.git: | workspace
 	cd workspace && git clone http://git.yoctoproject.org/git/poky

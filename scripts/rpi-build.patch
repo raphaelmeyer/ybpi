@@ -2,10 +2,10 @@ diff -rupN rpi-build-original/conf/bblayers.conf rpi-build-new/conf/bblayers.con
 --- rpi-build-original/conf/bblayers.conf	2015-05-18 19:34:06.685890603 +0000
 +++ rpi-build-new/conf/bblayers.conf	2015-05-18 19:37:13.226648414 +0000
 @@ -9,6 +9,7 @@ BBLAYERS ?= " \
-   /home/user/yocto/poky/meta \
-   /home/user/yocto/poky/meta-yocto \
-   /home/user/yocto/poky/meta-yocto-bsp \
-+  /home/user/yocto/meta-raspberrypi \
+   /workspace/poky/meta \
+   /workspace/poky/meta-yocto \
+   /workspace/poky/meta-yocto-bsp \
++  /workspace/meta-raspberrypi \
    "
  BBLAYERS_NON_REMOVABLE ?= " \
-   /home/user/yocto/poky/meta \
+   /workspace/poky/meta \
