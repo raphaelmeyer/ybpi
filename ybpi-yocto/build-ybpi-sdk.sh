@@ -11,7 +11,7 @@ fi
 cd ${WORKDIR}
 
 if [ ! -d meta-raspberrypi ] ; then
-  git clone http://git.yoctoproject.org/git/meta-raspberrypi
+  git clone https://github.com/raphaelmeyer/meta-raspberrypi.git
   cd meta-raspberrypi && git checkout -b ${YOCTO_RELEASE} origin/${YOCTO_RELEASE}
 fi
 cd ${WORKDIR}
