@@ -1,4 +1,4 @@
-FROM ubuntu:15.04
+FROM ybpi-base
 
 MAINTAINER Raphael Meyer <raphael.akira.meyer@gmail.com>
 
@@ -15,8 +15,10 @@ RUN apt-get update && apt-get install -y \
   texinfo \
   wget
 
-RUN mkdir -p /data /workspace
+COPY build-ybpi-sdk.sh /bin/
 
-VOLUME ["/data", "/workspace"]
-WORKDIR /workspace
+USER user
+
+VOLUME ["/yocto"]
+WORKDIR /yocto
 

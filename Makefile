@@ -1,59 +1,51 @@
 ################################################################################
 
-yocto_release = fido
+all: ybpi-yocto
 
 ################################################################################
 
 makepath = $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 
-toolchain = workspace/rpi-build/tmp/deploy/sdk/poky-glibc-x86_64-rpi-hwup-image-arm1176jzfshf-vfp-toolchain-1.8.sh
-image = workspace/rpi-build/tmp/deploy/images/raspberrypi/rpi-hwup-image-raspberrypi.rpi-sdimg
+sdk = artifacts/sdk-install.sh
 
 ################################################################################
 
-all: ybpi-sdk/.done
+ybpi-base: ybpi-base/.done
 
-################################################################################
+ybpi-yocto: ybpi-yocto/.done
+ybpi-yocto-data: ybpi-yocto-data/.done
 
 ybpi-sdk: ybpi-sdk/.done
-ybpi-yocto: ybpi-yocto/.done
+ybpi-sdk-data: ybpi-sdk-data/.done
 
-ybpi-sdk/.done: ybpi-sdk/Dockerfile $(toolchain) ybpi-sdk/ybpi-entrypoint.sh
-	cp $(toolchain) ybpi-sdk/toolchain-install.sh
-	docker build -t ybpi-sdk ybpi-sdk
-	touch ybpi-sdk/.done
+ybpi-base/.done: ybpi-base/Dockerfile
+	docker build -t ybpi-base ybpi-base
+	touch $@
 
-ybpi-yocto/.done: ybpi-yocto/Dockerfile
+ybpi-yocto/.done: ybpi-base/.done ybpi-yocto/Dockerfile ybpi-yocto/build-ybpi-sdk.sh
 	docker build -t ybpi-yocto ybpi-yocto
-	touch ybpi-yocto/.done
+	touch $@
 
-$(toolchain): ybpi-yocto/.done scripts/ybpi-build-sdk.sh scripts/local.conf workspace/poky/.git workspace/meta-raspberrypi/.git
+ybpi-yocto-data/.done: ybpi-base/.done ybpi-yocto-data/Dockerfile
+	docker build -t ybpi-yocto-data ybpi-yocto-data
+	touch $@
+
+ybpi-sdk-data/.done: ybpi-base/.done ybpi-sdk-data/Dockerfile
+	docker build -t ybpi-sdk-data ybpi-sdk-data
+	touch $@
+
+$(sdk): ybpi-yocto/.done ybpi-yocto-data/.done
 	docker run --rm \
-	           --user $(shell id -u):$(shell id -g) \
-	           -v $(makepath)/workspace:/workspace \
-	           -v $(makepath)/scripts:/data \
-	           ybpi-yocto /bin/bash -c "/data/ybpi-build-sdk.sh"
-
-workspace/poky/.git: | workspace
-	cd workspace && git clone http://git.yoctoproject.org/git/poky
-	cd workspace/poky && git checkout -b $(yocto_release) origin/$(yocto_release)
-
-workspace/meta-raspberrypi/.git: | workspace
-	cd workspace && git clone http://git.yoctoproject.org/git/meta-raspberrypi
-	cd workspace/meta-raspberrypi && git checkout -b $(yocto_release) origin/$(yocto_release)
-
-workspace:
-	mkdir -p workspace
-
-update:
-	cd workspace/poky && git pull
-	cd workspace/meta-raspberrypi && git pull
+	           --volumes-from ybpi-yocto-data \
+	           ybpi-yocto /bin/bash -c "/bin/build-ybpi-sdk.sh"
 
 clean:
+	rm -rf ybpi-base/.done
 	rm -rf ybpi-yocto/.done
+	rm -rf ybpi-yocto-data/.done
 	rm -rf ybpi-sdk/.done
-	rm -rf workspace
+	rm -rf ybpi-sdk-data/.done
 
-.PHONY: clean update
-.PHONY: ybpi-sdk ybpi-yocto
+.PHONY: clean
+.PHONY: ybpi-base
 

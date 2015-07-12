@@ -1,4 +1,4 @@
-FROM ubuntu:15.04
+FROM ybpi-base
 
 MAINTAINER Raphael Meyer <raphael.akira.meyer@gmail.com>
 
