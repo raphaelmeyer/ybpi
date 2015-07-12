@@ -28,6 +28,7 @@ ybpi-yocto/.done: ybpi-base/.done ybpi-yocto/Dockerfile ybpi-yocto/build-ybpi-sd
 
 ybpi-yocto-data/.done: ybpi-base/.done ybpi-yocto-data/Dockerfile
 	docker build -t ybpi-yocto-data ybpi-yocto-data
+	docker run --name ybpi-yocto-data ybpi-yocto-data
 	touch $@
 
 ybpi-sdk-data/.done: ybpi-base/.done ybpi-sdk-data/Dockerfile
@@ -40,11 +41,19 @@ $(sdk): ybpi-yocto/.done ybpi-yocto-data/.done
 	           ybpi-yocto /bin/bash -c "/bin/build-ybpi-sdk.sh"
 
 clean:
-	rm -rf ybpi-base/.done
-	rm -rf ybpi-yocto/.done
-	rm -rf ybpi-yocto-data/.done
-	rm -rf ybpi-sdk/.done
+	-docker rm -v ybpi-sdk-data
+	-docker rmi ybpi-sdk-data
 	rm -rf ybpi-sdk-data/.done
+	-docker rm -v ybpi-yocto-data
+	-docker rmi ybpi-yocto-data
+	rm -rf ybpi-yocto-data/.done
+	-docker rmi ybpi-sdk
+	rm -rf ybpi-sdk/.done
+	-docker rmi ybpi-yocto
+	rm -rf ybpi-yocto/.done
+	-docker rmi ybpi-base
+	rm -rf ybpi-base/.done
+	rm -rf $(sdk)
 
 .PHONY: clean
 .PHONY: ybpi-base
