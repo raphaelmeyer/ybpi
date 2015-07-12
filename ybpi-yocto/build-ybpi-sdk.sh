@@ -2,7 +2,7 @@
 
 YOCTO_RELEASE=fido
 
-WORKDIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+WORKDIR=/yocto
 
 if [ ! -d poky ] ; then
   git clone http://git.yoctoproject.org/git/poky
