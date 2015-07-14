@@ -33,14 +33,14 @@ ybpi-sdk/.done: ybpi-base/.done ybpi-sdk/Dockerfile artifacts/$(sdk)
 	touch $@
 
 ybpi-yocto-data/.done: ybpi-base/.done ybpi-yocto-data/Dockerfile
-	-docker rm -v ybpi-yocto-data
+	$(call DOCKER_RM_DATA,ybpi-yocto-data)
 	$(call DOCKER_RMI,ybpi-yocto-data)
 	docker build -t ybpi-yocto-data ybpi-yocto-data
 	$(call DOCKER_CREATE,ybpi-yocto-data)
 	touch $@
 
 ybpi-sdk-data/.done: ybpi-base/.done ybpi-sdk-data/Dockerfile
-	-docker rm -v ybpi-sdk-data
+	$(call DOCKER_RM_DATA,ybpi-sdk-data)
 	$(call DOCKER_RMI,ybpi-sdk-data)
 	docker build -t ybpi-sdk-data ybpi-sdk-data
 	$(call DOCKER_CREATE,ybpi-sdk-data)
@@ -74,14 +74,14 @@ clean: clean-yocto clean-sdk
 	rm -rf $(sdk)
 
 clean-yocto:
-	-docker rm -v ybpi-yocto-data
+	$(call DOCKER_RM_DATA,ybpi-yocto-data)
 	$(call DOCKER_RMI,ybpi-yocto-data)
 	rm -rf ybpi-yocto-data/.done
 	$(call DOCKER_RMI,ybpi-yocto)
 	rm -rf ybpi-yocto/.done
 
 clean-sdk:
-	-docker rm -v ybpi-sdk-data
+	$(call DOCKER_RM_DATA,ybpi-sdk-data)
 	$(call DOCKER_RMI,ybpi-sdk-data)
 	rm -rf ybpi-sdk-data/.done
 	$(call DOCKER_RMI,ybpi-sdk)
@@ -90,17 +90,16 @@ clean-sdk:
 ################################################################################
 
 define DOCKER_RMI
-if docker images $1 | awk '{ print $$2 }' | grep -q -F "latest" ; then docker rmi $1 ; fi
+if docker images --no-trunc $1 | awk 'NR > 1 { print $$2 }' | grep -q -F "latest" ; then docker rmi $1 ; fi
 endef
 
 define DOCKER_CREATE
-	docker create --name $1 $1
+docker create --name $1 $1
 endef
 
-# TODO
-#define DOCKER_RM_DATA
-#if docker ps -a -f name=$1 ; then docker rm -v $1 ; fi
-#endef
+define DOCKER_RM_DATA
+if docker ps --no-trunc -a -f name=$1 | awk 'NR > 1 { print $$NF }' | grep -q -w $1 ; then docker rm -v $1 ; fi
+endef
 
 .PHONY: clean
 .PHONY: clean-yocto clean-sdk
