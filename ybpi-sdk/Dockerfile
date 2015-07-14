@@ -9,13 +9,13 @@ RUN apt-get update && apt-get install -y \
 
 RUN apt-get update && apt-get install --no-install-recommends -y cmake
 
-COPY toolchain-install.sh /tmp/
-RUN bash /tmp/toolchain-install.sh -y
-RUN rm -rf /tmp/toolchain-install.sh
+COPY sdk-installer.sh /tmp/
+RUN bash /tmp/sdk-installer.sh -y
+RUN rm -rf /tmp/sdk-installer.sh
 
-RUN mkdir -p /data /workspace
+USER user
 
-VOLUME ["/data", "/workspace"]
+VOLUME ["/workspace"]
 WORKDIR /workspace
 
 COPY ybpi-entrypoint.sh /

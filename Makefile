@@ -1,12 +1,18 @@
 ################################################################################
 
-all: ybpi-yocto
+all: ybpi-sdk
 
 ################################################################################
 
 makepath = $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 
-sdk = artifacts/sdk-install.sh
+sdk = poky-glibc-x86_64-rpi-hwup-image-arm1176jzfshf-vfp-toolchain-1.8.sh
+image = rpi-hwup-image-raspberrypi.rpi-sdimg
+
+################################################################################
+
+sdk_path = /yocto/rpi-build/tmp/deploy/sdk/$(sdk)
+sdk_image = /yocto/rpi-build/tmp/deploy/images/raspberrypi/$(image)
 
 ################################################################################
 
@@ -19,42 +25,81 @@ ybpi-sdk: ybpi-sdk/.done
 ybpi-sdk-data: ybpi-sdk-data/.done
 
 ybpi-base/.done: ybpi-base/Dockerfile
+	$(call DOCKER_RMI,ybpi-base)
 	docker build -t ybpi-base ybpi-base
 	touch $@
 
-ybpi-yocto/.done: ybpi-base/.done ybpi-yocto/Dockerfile ybpi-yocto/build-ybpi-sdk.sh
+ybpi-yocto/.done: ybpi-base ybpi-yocto/Dockerfile ybpi-yocto/build-ybpi-sdk.sh
+	$(call DOCKER_RMI,ybpi-yocto)
 	docker build -t ybpi-yocto ybpi-yocto
 	touch $@
 
-ybpi-yocto-data/.done: ybpi-base/.done ybpi-yocto-data/Dockerfile
+ybpi-sdk/.done: ybpi-base ybpi-sdk/Dockerfile artifacts/$(sdk)
+	$(call DOCKER_RMI,ybpi-sdk)
+	cp artifacts/$(sdk) ybpi-sdk/sdk-installer.sh
+	docker build -t ybpi-sdk ybpi-sdk
+	touch $@
+
+ybpi-yocto-data/.done: ybpi-base ybpi-yocto-data/Dockerfile
+	-docker rm -v ybpi-yocto-data
+	$(call DOCKER_RMI,ybpi-yocto-data)
 	docker build -t ybpi-yocto-data ybpi-yocto-data
-	docker run --name ybpi-yocto-data ybpi-yocto-data
+	$(call DOCKER_CREATE,ybpi-yocto-data)
 	touch $@
 
-ybpi-sdk-data/.done: ybpi-base/.done ybpi-sdk-data/Dockerfile
+ybpi-sdk-data/.done: ybpi-base ybpi-sdk-data/Dockerfile
+	-docker rm -v ybpi-sdk-data
+	$(call DOCKER_RMI,ybpi-sdk-data)
 	docker build -t ybpi-sdk-data ybpi-sdk-data
+	$(call DOCKER_CREATE,ybpi-sdk-data)
 	touch $@
 
-$(sdk): ybpi-yocto/.done ybpi-yocto-data/.done
+################################################################################
+
+build-yocto: ybpi-yocto ybpi-yocto-data
 	docker run --rm \
 	           --volumes-from ybpi-yocto-data \
 	           ybpi-yocto /bin/bash -c "/bin/build-ybpi-sdk.sh"
+	docker cp ybpi-yocto-data:$(sdk_path) artifacts/
+	docker cp ybpi-yocto-data:$(image_path) artifacts/
 
-clean:
-	-docker rm -v ybpi-sdk-data
-	-docker rmi ybpi-sdk-data
-	rm -rf ybpi-sdk-data/.done
-	-docker rm -v ybpi-yocto-data
-	-docker rmi ybpi-yocto-data
-	rm -rf ybpi-yocto-data/.done
-	-docker rmi ybpi-sdk
-	rm -rf ybpi-sdk/.done
-	-docker rmi ybpi-yocto
-	rm -rf ybpi-yocto/.done
-	-docker rmi ybpi-base
-	rm -rf ybpi-base/.done
+artifacts/$(sdk): build-yocto
+artifacts/$(image): build-yocto
+
+################################################################################
+
+clean: clean-yocto clean-sdk
 	rm -rf $(sdk)
 
+clean-yocto:
+	-docker rm -v ybpi-yocto-data
+	$(call DOCKER_RMI,ybpi-yocto-data)
+	rm -rf ybpi-yocto-data/.done
+	$(call DOCKER_RMI,ybpi-yocto)
+	rm -rf ybpi-yocto/.done
+
+clean-sdk:
+	-docker rm -v ybpi-sdk-data
+	$(call DOCKER_RMI,ybpi-sdk-data)
+	rm -rf ybpi-sdk-data/.done
+	$(call DOCKER_RMI,ybpi-sdk)
+	rm -rf ybpi-sdk/.done
+
+################################################################################
+
+define DOCKER_RMI
+if docker images $1 | awk '{ print $$2 }' | grep -q -F "latest" ; then docker rmi $1 ; fi
+endef
+
+define DOCKER_CREATE
+	docker create --name $1 $1
+endef
+
+# TODO
+#define DOCKER_RM_DATA
+#if docker ps -a -f name=$1 ; then docker rm -v $1 ; fi
+#endef
+
 .PHONY: clean
-.PHONY: ybpi-base
+.PHONY: clean-yocto clean-sdk
 
