@@ -1,9 +1,7 @@
 
-workspace
-
 *.swp
 *.done
 
-ybpi-toolchain/image.rpi-sdimg
-ybpi-toolchain/toolchain-install.sh
+/artifacts/
+/ybpi-sdk/sdk-installer.sh
 

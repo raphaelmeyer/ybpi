@@ -12,7 +12,7 @@ image = rpi-hwup-image-raspberrypi.rpi-sdimg
 ################################################################################
 
 sdk_path = /yocto/rpi-build/tmp/deploy/sdk/$(sdk)
-sdk_image = /yocto/rpi-build/tmp/deploy/images/raspberrypi/$(image)
+image_path = /yocto/rpi-build/tmp/deploy/images/raspberrypi/$(image)
 
 ################################################################################
 
