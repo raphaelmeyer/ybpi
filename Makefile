@@ -16,38 +16,30 @@ sdk_image = /yocto/rpi-build/tmp/deploy/images/raspberrypi/$(image)
 
 ################################################################################
 
-ybpi-base: ybpi-base/.done
-
-ybpi-yocto: ybpi-yocto/.done
-ybpi-yocto-data: ybpi-yocto-data/.done
-
-ybpi-sdk: ybpi-sdk/.done
-ybpi-sdk-data: ybpi-sdk-data/.done
-
 ybpi-base/.done: ybpi-base/Dockerfile
 	$(call DOCKER_RMI,ybpi-base)
 	docker build -t ybpi-base ybpi-base
 	touch $@
 
-ybpi-yocto/.done: ybpi-base ybpi-yocto/Dockerfile ybpi-yocto/build-ybpi-sdk.sh
+ybpi-yocto/.done: ybpi-base/.done ybpi-yocto/Dockerfile ybpi-yocto/build-ybpi-sdk.sh
 	$(call DOCKER_RMI,ybpi-yocto)
 	docker build -t ybpi-yocto ybpi-yocto
 	touch $@
 
-ybpi-sdk/.done: ybpi-base ybpi-sdk/Dockerfile artifacts/$(sdk)
+ybpi-sdk/.done: ybpi-base/.done ybpi-sdk/Dockerfile artifacts/$(sdk)
 	$(call DOCKER_RMI,ybpi-sdk)
 	cp artifacts/$(sdk) ybpi-sdk/sdk-installer.sh
 	docker build -t ybpi-sdk ybpi-sdk
 	touch $@
 
-ybpi-yocto-data/.done: ybpi-base ybpi-yocto-data/Dockerfile
+ybpi-yocto-data/.done: ybpi-base/.done ybpi-yocto-data/Dockerfile
 	-docker rm -v ybpi-yocto-data
 	$(call DOCKER_RMI,ybpi-yocto-data)
 	docker build -t ybpi-yocto-data ybpi-yocto-data
 	$(call DOCKER_CREATE,ybpi-yocto-data)
 	touch $@
 
-ybpi-sdk-data/.done: ybpi-base ybpi-sdk-data/Dockerfile
+ybpi-sdk-data/.done: ybpi-base/.done ybpi-sdk-data/Dockerfile
 	-docker rm -v ybpi-sdk-data
 	$(call DOCKER_RMI,ybpi-sdk-data)
 	docker build -t ybpi-sdk-data ybpi-sdk-data
@@ -56,7 +48,7 @@ ybpi-sdk-data/.done: ybpi-base ybpi-sdk-data/Dockerfile
 
 ################################################################################
 
-build-yocto: ybpi-yocto ybpi-yocto-data
+build-yocto: ybpi-yocto/.done ybpi-yocto-data/.done
 	docker run --rm \
 	           --volumes-from ybpi-yocto-data \
 	           ybpi-yocto /bin/bash -c "/bin/build-ybpi-sdk.sh"
@@ -65,6 +57,16 @@ build-yocto: ybpi-yocto ybpi-yocto-data
 
 artifacts/$(sdk): build-yocto
 artifacts/$(image): build-yocto
+
+################################################################################
+
+ybpi-base: ybpi-base/.done
+
+ybpi-yocto: ybpi-yocto/.done
+ybpi-yocto-data: ybpi-yocto-data/.done
+
+ybpi-sdk: ybpi-sdk/.done
+ybpi-sdk-data: ybpi-sdk-data/.done
 
 ################################################################################
 
