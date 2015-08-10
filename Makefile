@@ -1,6 +1,6 @@
 ################################################################################
 
-all: ybpi-sdk ybpi-sdk-data
+all: ybpi-sdk/.done ybpi-sdk-data/.done
 
 ################################################################################
 
@@ -26,7 +26,7 @@ ybpi-yocto/.done: ybpi-base/.done ybpi-yocto/Dockerfile ybpi-yocto/build-ybpi-sd
 	docker build -t ybpi-yocto ybpi-yocto
 	touch $@
 
-ybpi-sdk/.done: ybpi-base/.done ybpi-sdk/Dockerfile artifacts/$(sdk)
+ybpi-sdk/.done: ybpi-base/.done ybpi-sdk/Dockerfile artifacts/$(sdk) ybpi-sdk/ybpi-entrypoint.sh
 	-docker rmi ybpi-sdk
 	cp artifacts/$(sdk) ybpi-sdk/sdk-installer.sh
 	docker build -t ybpi-sdk ybpi-sdk
@@ -46,15 +46,16 @@ ybpi-sdk-data/.done: ybpi-base/.done ybpi-sdk-data/Dockerfile
 
 ################################################################################
 
-build-yocto: ybpi-yocto/.done ybpi-yocto-data/.done
+.build-yocto.done: ybpi-yocto/.done ybpi-yocto-data/.done
 	docker run --rm \
 	           --volumes-from ybpi-yocto-data \
 	           ybpi-yocto /bin/bash -c "/bin/build-ybpi-sdk.sh"
 	docker cp ybpi-yocto-data:$(sdk_path) artifacts/
 	docker cp ybpi-yocto-data:$(image_path) artifacts/
+	touch $@
 
-artifacts/$(sdk): build-yocto
-artifacts/$(image): build-yocto
+artifacts/$(sdk): .build-yocto.done
+artifacts/$(image): .build-yocto.done
 
 ################################################################################
 
@@ -69,7 +70,8 @@ ybpi-sdk-data: ybpi-sdk-data/.done
 ################################################################################
 
 clean: clean-yocto clean-sdk
-	rm -rf $(sdk)
+	rm -rf artifacts/$(sdk)
+	rm -rf artifacts/$(image)
 
 clean-yocto:
 	-docker rm -v ybpi-yocto-data
