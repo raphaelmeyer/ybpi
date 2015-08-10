@@ -1,6 +1,6 @@
 ################################################################################
 
-all: ybpi-sdk
+all: ybpi-sdk ybpi-sdk-data
 
 ################################################################################
 
@@ -33,10 +33,15 @@ ybpi-sdk/.done: ybpi-base/.done ybpi-sdk/Dockerfile artifacts/$(sdk)
 	touch $@
 
 ybpi-yocto-data/.done: ybpi-base/.done ybpi-yocto-data/Dockerfile
-	-docker rm -v ybpi-yocto-dataA
+	-docker rm -v ybpi-yocto-data
 	-docker rmi ybpi-yocto-data
 	docker build -t ybpi-yocto-data ybpi-yocto-data
 	docker create --name ybpi-yocto-data ybpi-yocto-data
+	touch $@
+
+ybpi-sdk-data/.done: ybpi-base/.done ybpi-sdk-data/Dockerfile
+	-docker rmi ybpi-sdk-data
+	docker build -t ybpi-sdk-data ybpi-sdk-data
 	touch $@
 
 ################################################################################
@@ -59,6 +64,7 @@ ybpi-yocto: ybpi-yocto/.done
 ybpi-yocto-data: ybpi-yocto-data/.done
 
 ybpi-sdk: ybpi-sdk/.done
+ybpi-sdk-data: ybpi-sdk-data/.done
 
 ################################################################################
 
@@ -73,7 +79,9 @@ clean-yocto:
 	rm -rf ybpi-yocto/.done
 
 clean-sdk:
+	-docker rmi ybpi-sdk-data
 	-docker rmi ybpi-sdk
+	rm -rf ybpi-sdk-data/.done
 	rm -rf ybpi-sdk/.done
 
 ################################################################################
