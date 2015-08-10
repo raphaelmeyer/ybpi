@@ -6,13 +6,13 @@ all: ybpi-sdk ybpi-sdk-data
 
 makepath = $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 
-sdk = poky-glibc-x86_64-rpi-hwup-image-arm1176jzfshf-vfp-toolchain-1.8.sh
-image = rpi-hwup-image-raspberrypi.rpi-sdimg
+sdk = poky-glibc-x86_64-rpi-hwup-image-cortexa7hf-vfp-vfpv4-neon-toolchain-1.8.sh
+image = rpi-hwup-image-raspberrypi2.rpi-sdimg
 
 ################################################################################
 
 sdk_path = /yocto/rpi-build/tmp/deploy/sdk/$(sdk)
-image_path = /yocto/rpi-build/tmp/deploy/images/raspberrypi/$(image)
+image_path = /yocto/rpi-build/tmp/deploy/images/raspberrypi2/$(image)
 
 ################################################################################
 
