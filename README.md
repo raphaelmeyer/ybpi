@@ -4,9 +4,9 @@
 
 ### Install
 
-    sudo dd if=artifacts/raspberrypi/rpi-hwup-image-raspberrypi2-YYYYMMDDHHMM.rootfs.rpi-sdimg of=/dev/sdX
+    sudo dd if=artifacts/rpi-hwup-image-raspberrypi2-YYYYMMDDHHMM.rootfs.rpi-sdimg of=/dev/sdX
     sudo parted /dev/sdX resizepart 2 [SIZE]
-    sudo resize2fs /dev/sdeX
+    sudo resize2fs /dev/sdX1
 
 ## Toolchain usage
 

@@ -12,7 +12,8 @@ image = rpi-hwup-image-raspberrypi2.rpi-sdimg
 ################################################################################
 
 sdk_path = /yocto/rpi-build/tmp/deploy/sdk/$(sdk)
-image_path = /yocto/rpi-build/tmp/deploy/images/raspberrypi2/$(image)
+images_path = /yocto/rpi-build/tmp/deploy/images/raspberrypi2
+image_path = $(images_path)/$(image)
 
 ################################################################################
 
@@ -50,8 +51,11 @@ ybpi-sdk-data/.done: ybpi-base/.done ybpi-sdk-data/Dockerfile
 	docker run --rm \
 	           --volumes-from ybpi-yocto-data \
 	           ybpi-yocto /bin/bash -c "/bin/build-ybpi-sdk.sh"
+	$(eval image_target := $(shell docker run --rm \
+	                                          --volumes-from ybpi-yocto-data \
+	                                          ybpi-yocto readlink $(image_path)))
 	docker cp ybpi-yocto-data:$(sdk_path) artifacts/
-	docker cp ybpi-yocto-data:$(image_path) artifacts/
+	docker cp ybpi-yocto-data:$(images_path)/$(image_target) artifacts/
 	touch $@
 
 artifacts/$(sdk): .build-yocto.done
