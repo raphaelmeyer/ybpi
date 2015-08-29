@@ -2,6 +2,8 @@ FROM ybpi-base
 
 MAINTAINER Raphael Meyer <raphael.meyer@bbv.ch>
 
+USER root
+
 RUN apt-get update && apt-get install -y \
   bzip2 \
   chrpath \
@@ -18,7 +20,4 @@ RUN apt-get update && apt-get install -y \
 COPY build-ybpi-sdk.sh /bin/
 
 USER user
-
-VOLUME ["/yocto"]
-WORKDIR /yocto
 

@@ -1,6 +1,6 @@
 ################################################################################
 
-all: ybpi-sdk/.done ybpi-sdk-data/.done
+all: ybpi-sdk
 
 ################################################################################
 
@@ -11,87 +11,82 @@ image = rpi-hwup-image-raspberrypi2.rpi-sdimg
 
 ################################################################################
 
-sdk_path = /yocto/rpi-build/tmp/deploy/sdk/$(sdk)
-images_path = /yocto/rpi-build/tmp/deploy/images/raspberrypi2
-image_path = $(images_path)/$(image)
+deploy = /workspace/rpi-build/tmp/deploy
+
+sdk_deploy = $(deploy)/sdk
+sdk_path = $(sdk_deploy)/$(sdk)
+
+image_deploy = $(deploy)/images/raspberrypi2
+image_path = $(image_deploy)/$(image)
 
 ################################################################################
 
 ybpi-base/.done: ybpi-base/Dockerfile
-	-docker rmi ybpi-base
-	docker build -t ybpi-base ybpi-base
+	-docker rmi raphaelmeyer/ybpi-base
+	docker build -t raphaelmeyer/ybpi-base ybpi-base
 	touch $@
 
 ybpi-yocto/.done: ybpi-base/.done ybpi-yocto/Dockerfile ybpi-yocto/build-ybpi-sdk.sh
-	-docker rmi ybpi-yocto
-	docker build -t ybpi-yocto ybpi-yocto
+	-docker rmi raphaelmeyer/ybpi-yocto
+	docker build -t raphaelmeyer/ybpi-yocto ybpi-yocto
 	touch $@
 
-ybpi-sdk/.done: ybpi-base/.done ybpi-sdk/Dockerfile artifacts/$(sdk) ybpi-sdk/ybpi-entrypoint.sh
-	-docker rmi ybpi-sdk
+ybpi-sdk/.done: ybpi-base/.done ybpi-sdk/Dockerfile ybpi-sdk/ybpi-entrypoint.sh artifacts/$(sdk)
+	-docker rmi raphaelmeyer/ybpi-sdk
 	cp artifacts/$(sdk) ybpi-sdk/sdk-installer.sh
-	docker build -t ybpi-sdk ybpi-sdk
-	touch $@
-
-ybpi-yocto-data/.done: ybpi-base/.done ybpi-yocto-data/Dockerfile
-	-docker rm -v ybpi-yocto-data
-	-docker rmi ybpi-yocto-data
-	docker build -t ybpi-yocto-data ybpi-yocto-data
-	docker create --name ybpi-yocto-data ybpi-yocto-data
-	touch $@
-
-ybpi-sdk-data/.done: ybpi-base/.done ybpi-sdk-data/Dockerfile
-	-docker rmi ybpi-sdk-data
-	docker build -t ybpi-sdk-data ybpi-sdk-data
+	docker build -t raphaelmeyer/ybpi-sdk ybpi-sdk
 	touch $@
 
 ################################################################################
 
-.build-yocto.done: ybpi-yocto/.done ybpi-yocto-data/.done
-	docker run --rm \
-	           --volumes-from ybpi-yocto-data \
-	           ybpi-yocto /bin/bash -c "/bin/build-ybpi-sdk.sh"
-	$(eval image_target := $(shell docker run --rm \
-	                                          --volumes-from ybpi-yocto-data \
-	                                          ybpi-yocto readlink $(image_path)))
-	docker cp ybpi-yocto-data:$(sdk_path) artifacts/
-	docker cp ybpi-yocto-data:$(images_path)/$(image_target) artifacts/
+.yocto-workspace.done: ybpi-base/.done
+	-docker rm -v yocto-workspace
+	docker create --name yocto-workspace raphaelmeyer/ybpi-base
 	touch $@
-
-artifacts/$(sdk): .build-yocto.done
-artifacts/$(image): .build-yocto.done
 
 ################################################################################
 
-ybpi-base: ybpi-base/.done
+ybpi-yocto: ybpi-yocto/.done .yocto-workspace.done
+	docker run --rm -t --volumes-from yocto-workspace raphaelmeyer/ybpi-yocto \
+	  /bin/bash -c "/bin/build-ybpi-sdk.sh"
 
-ybpi-yocto: ybpi-yocto/.done
-ybpi-yocto-data: ybpi-yocto-data/.done
+artifacts/$(image): ybpi-yocto
+	$(eval target := $(shell \
+	  docker run --rm -t --volumes-from yocto-workspace \
+	    raphaelmeyer/ybpi-yocto readlink $(image_path)))
+	docker cp yocto-workspace:$(image_deploy)/$(target) artifacts/$(image)
+
+artifacts/$(sdk): ybpi-yocto
+	docker cp yocto-workspace:$(sdk_path) artifacts/$(sdk)
+
+################################################################################
 
 ybpi-sdk: ybpi-sdk/.done
-ybpi-sdk-data: ybpi-sdk-data/.done
+
+sdk: artifacts/$(sdk)
+image: artifacts/$(image)
 
 ################################################################################
 
-clean: clean-yocto clean-sdk
+clean: clean-yocto clean-sdk clean-base
 	rm -rf artifacts/$(sdk)
 	rm -rf artifacts/$(image)
 
 clean-yocto:
-	-docker rm -v ybpi-yocto-data
-	-docker rmi ybpi-yocto-data
-	-docker rmi ybpi-yocto
-	rm -rf ybpi-yocto-data/.done
+	-docker rm -v yocto-workspace
+	-docker rmi raphaelmeyer/ybpi-yocto
 	rm -rf ybpi-yocto/.done
 
 clean-sdk:
-	-docker rmi ybpi-sdk-data
-	-docker rmi ybpi-sdk
-	rm -rf ybpi-sdk-data/.done
+	-docker rmi raphaelmeyer/ybpi-sdk
 	rm -rf ybpi-sdk/.done
+
+clean-base:
+	-docker rmi raphaelmeyer/ybpi-base
+	rm -rf ybpi-base/.done
 
 ################################################################################
 
 .PHONY: clean
-.PHONY: clean-yocto clean-sdk
+.PHONY: clean-yocto clean-sdk clean-base
 

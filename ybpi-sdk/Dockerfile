@@ -2,6 +2,8 @@ FROM ybpi-base
 
 MAINTAINER Raphael Meyer <raphael.meyer@bbv.ch>
 
+USER root
+
 RUN apt-get update && apt-get install -y \
   bzip2 \
   make \
@@ -14,9 +16,6 @@ RUN bash /tmp/sdk-installer.sh -y
 RUN rm -rf /tmp/sdk-installer.sh
 
 USER user
-
-VOLUME ["/workspace"]
-WORKDIR /workspace
 
 COPY ybpi-entrypoint.sh /
 ENTRYPOINT ["/ybpi-entrypoint.sh"]
