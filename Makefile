@@ -50,14 +50,17 @@ ybpi-yocto: ybpi-yocto/.done .yocto-workspace.done
 	docker run --rm -t --volumes-from yocto-workspace raphaelmeyer/ybpi-yocto \
 	  /bin/bash -c "/bin/build-ybpi-sdk.sh"
 
-artifacts/$(image): ybpi-yocto
+artifacts/$(image): ybpi-yocto artifacts
 	$(eval target := $(shell \
 	  docker run --rm -t --volumes-from yocto-workspace \
 	    raphaelmeyer/ybpi-yocto readlink $(image_path)))
-	docker cp yocto-workspace:$(image_deploy)/$(target) artifacts/$(image)
+	docker cp yocto-workspace:$(image_deploy)/$(target) $@
 
-artifacts/$(sdk): ybpi-yocto
-	docker cp yocto-workspace:$(sdk_path) artifacts/$(sdk)
+artifacts/$(sdk): ybpi-yocto artifacts
+	docker cp yocto-workspace:$(sdk_path) $@
+
+artifacts:
+	mkdir -p $@
 
 ################################################################################
 
