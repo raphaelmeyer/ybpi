@@ -2,7 +2,7 @@
 
 YOCTO_RELEASE=fido
 
-WORKDIR=/yocto
+WORKDIR=/workspace
 
 cd ${WORKDIR}
 if [ ! -d poky ] ; then
