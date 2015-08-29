@@ -1,4 +1,4 @@
-FROM ybpi-base
+FROM raphaelmeyer/ybpi-base
 
 MAINTAINER Raphael Meyer <raphael.meyer@bbv.ch>
 
