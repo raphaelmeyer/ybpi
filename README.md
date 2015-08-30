@@ -62,17 +62,17 @@ Change the `Makefile` and e.g. `build-ybpi-sdk.sh` in *ybpi-yocto* for your need
 
 ## Pre-built
 
-## docker containers
+### docker containers
 
-* [ybpi-base:2.0.0](https://hub.docker.com/r/raphaelmeyer/ybpi-base/):
+* [ybpi-base](https://hub.docker.com/r/raphaelmeyer/ybpi-base/):
   The base container for *ybpi-sdk* and *ybpi-yocto*.
-  Can also be used for data containers holding the build workspace.
-* [ybpi-yocto:2.0.0](https://hub.docker.com/r/raphaelmeyer/ybpi-yocto/):
+  Also used for data containers holding the build workspaces.
+* [ybpi-yocto](https://hub.docker.com/r/raphaelmeyer/ybpi-yocto/):
   This container is used to build the yocto image and the toolchain (sdk) installer.
-* [ybpi-sdk:2.0.0](https://hub.docker.com/r/raphaelmeyer/ybpi-sdk/)
+* [ybpi-sdk](https://hub.docker.com/r/raphaelmeyer/ybpi-sdk/)
   The toolchain (sdk) is installed in this container.
 
-## Yocto image
+### yocto image
 
 [ybpi image](https://www.dropbox.com/s/aumk061gelm3wd7/rpi-hwup-image-raspberrypi2_2.0.0.rpi-sdimg?raw=1)
 
