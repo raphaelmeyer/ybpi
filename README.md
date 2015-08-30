@@ -53,11 +53,11 @@ ssh to the raspberry and run the hello world application:
 
 ### Example project
 
-There is an [example](https://github.com/raphaelmeyer/skeleton/).
+An more complete example can be found [here](https://github.com/raphaelmeyer/skeleton/).
 
 ## Build the containers
 
-The containers and the yocto image are built with the Makefile.
+The containers and the yocto image are built with a Makefile.
 Change the `Makefile` and e.g. `build-ybpi-sdk.sh` in *ybpi-yocto* for your needs.
 
 ## Pre-built
