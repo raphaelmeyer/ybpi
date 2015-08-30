@@ -28,7 +28,7 @@ Setup a cmake project, e.g. in `/tmp/src` with a `CMakeLists.txt` and a `main.cc
     project (HELLO)
     add_executable(hello main.cc)
 
-    $ cat /tmp/src/main.cc:
+    $ cat /tmp/src/main.cc
     #include <iostream>
 
     int main() {
@@ -38,7 +38,7 @@ Setup a cmake project, e.g. in `/tmp/src` with a `CMakeLists.txt` and a `main.cc
 Use the *ybpi-sdk* container to build the hello world application.
 
     $ docker run --rm -t -v /tmp/src:/home/user/src:ro --volumes-from workspace raphaelmeyer/ybpi-sdk:2.0.0 cmake /home/user/src
-    $ docker run --rm -t -v /tmp/src:/home/user/src:ro --voluems-from workspace raphaelmeyer/ybpi-sdk:2.0.0 make
+    $ docker run --rm -t -v /tmp/src:/home/user/src:ro --volumes-from workspace raphaelmeyer/ybpi-sdk:2.0.0 make
 
 Get the hello world from the workspace container and copy to the Raspberry Pi.
 
