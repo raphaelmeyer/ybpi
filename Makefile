@@ -1,6 +1,6 @@
 ################################################################################
 
-all: ybpi-sdk image
+all: ybpi-sdk image host-sdk
 
 ################################################################################
 
@@ -37,6 +37,11 @@ ybpi-sdk/.done: ybpi-base/.done ybpi-sdk/Dockerfile ybpi-sdk/ybpi-entrypoint.sh 
 	docker build -t raphaelmeyer/ybpi-sdk ybpi-sdk
 	touch $@
 
+host-sdk/.done: ybpi-base/.done host-sdk/Dockerfile
+	-docker rmi raphaelmeyer/host-sdk
+	docker build -t raphaelmeyer/host-sdk host-sdk
+	touch $@
+
 ################################################################################
 
 .yocto-workspace.done: ybpi-base/.done
@@ -71,7 +76,7 @@ image: artifacts/$(image)
 
 ################################################################################
 
-clean: clean-yocto clean-sdk clean-base
+clean: clean-yocto clean-sdk clean-base clean-host
 	rm -rf artifacts/$(sdk)
 	rm -rf artifacts/$(image)
 
@@ -88,8 +93,12 @@ clean-base:
 	-docker rmi raphaelmeyer/ybpi-base
 	rm -rf ybpi-base/.done
 
+clean-host:
+	-docker rmi raphaelmeyer/host-sdk
+	rm -rf host-sdk/.done
+
 ################################################################################
 
 .PHONY: clean
-.PHONY: clean-yocto clean-sdk clean-base
+.PHONY: clean-yocto clean-sdk clean-base clean-host
 
