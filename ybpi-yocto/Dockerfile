@@ -1,4 +1,4 @@
-FROM raphaelmeyer/ybpi-base
+FROM raphaelmeyer/base:1.0.1
 
 MAINTAINER Raphael Meyer <raphael.meyer@bbv.ch>
 
@@ -20,4 +20,7 @@ RUN apt-get update && apt-get install -y \
 COPY build-ybpi-sdk.sh /bin/
 
 USER user
+
+VOLUME ["/workspace"]
+WORKDIR /workspace
 

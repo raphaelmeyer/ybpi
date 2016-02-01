@@ -1,15 +1,19 @@
 ################################################################################
 
-all: ybpi-sdk image host-sdk
+all: ybpi-sdk image
+
+ybpi-sdk: ybpi-sdk/.done
+image: artifacts/$(image)
+release: ybpi-release
 
 ################################################################################
-
-makepath = $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 
 sdk = poky-glibc-x86_64-rpi-hwup-image-cortexa7hf-vfp-vfpv4-neon-toolchain-1.8.sh
 image = rpi-hwup-image-raspberrypi2.rpi-sdimg
 
 ################################################################################
+
+base_version = 1.0.1
 
 deploy = /workspace/rpi-build/tmp/deploy
 
@@ -21,37 +25,41 @@ image_path = $(image_deploy)/$(image)
 
 ################################################################################
 
-ybpi-base/.done: ybpi-base/Dockerfile
-	-docker rmi raphaelmeyer/ybpi-base
-	docker build -t raphaelmeyer/ybpi-base ybpi-base
-	touch $@
-
-ybpi-yocto/.done: ybpi-base/.done ybpi-yocto/Dockerfile ybpi-yocto/build-ybpi-sdk.sh
+ybpi-yocto/.done: ybpi-yocto/Dockerfile ybpi-yocto/build-ybpi-sdk.sh
 	-docker rmi raphaelmeyer/ybpi-yocto
 	docker build -t raphaelmeyer/ybpi-yocto ybpi-yocto
 	touch $@
 
-ybpi-sdk/.done: ybpi-base/.done ybpi-sdk/Dockerfile ybpi-sdk/ybpi-entrypoint.sh artifacts/$(sdk)
+ybpi-sdk/.done: ybpi-sdk/Dockerfile ybpi-sdk/ybpi-entrypoint.sh artifacts/$(sdk)
 	-docker rmi raphaelmeyer/ybpi-sdk
 	cp artifacts/$(sdk) ybpi-sdk/sdk-installer.sh
 	docker build -t raphaelmeyer/ybpi-sdk ybpi-sdk
 	touch $@
 
-host-sdk/.done: ybpi-base/.done host-sdk/Dockerfile
-	-docker rmi raphaelmeyer/host-sdk
-	docker build -t raphaelmeyer/host-sdk host-sdk
-	touch $@
+################################################################################
+
+ybpi-release: check-tag ybpi-sdk
+	docker tag raphaelmeyer/ybpi-yocto raphaelmeyer/ypbi-yocto:$(tag)
+	docker tag raphaelmeyer/ybpi-sdk raphaelmeyer/ypbi-sdk:$(tag)
+	docker push raphaelmeyer/ybpi-yocto:$(tag)
+	docker push raphaelmeyer/ybpi-sdk:$(tag)
+	echo "TODO upload image to dropbox"
+
+check-tag:
+ifndef tag
+»·$(error "Must specify a tag with make release tag=TAG")
+endif
 
 ################################################################################
 
-.yocto-workspace.done: ybpi-base/.done
+tools/.yocto-workspace.done:
 	-docker rm -v yocto-workspace
-	docker create --name yocto-workspace raphaelmeyer/ybpi-base
+	docker create --name yocto-workspace raphaelmeyer/base:$(base_version)
 	touch $@
 
 ################################################################################
 
-ybpi-yocto: ybpi-yocto/.done .yocto-workspace.done
+ybpi-yocto: ybpi-yocto/.done tools/.yocto-workspace.done
 	docker run --rm -t --volumes-from yocto-workspace raphaelmeyer/ybpi-yocto \
 	  /bin/bash -c "/bin/build-ybpi-sdk.sh"
 
@@ -69,14 +77,7 @@ artifacts:
 
 ################################################################################
 
-ybpi-sdk: ybpi-sdk/.done
-
-sdk: artifacts/$(sdk)
-image: artifacts/$(image)
-
-################################################################################
-
-clean: clean-yocto clean-sdk clean-base clean-host
+clean: clean-yocto clean-sdk
 	rm -rf artifacts/$(sdk)
 	rm -rf artifacts/$(image)
 
@@ -89,16 +90,8 @@ clean-sdk:
 	-docker rmi raphaelmeyer/ybpi-sdk
 	rm -rf ybpi-sdk/.done
 
-clean-base:
-	-docker rmi raphaelmeyer/ybpi-base
-	rm -rf ybpi-base/.done
-
-clean-host:
-	-docker rmi raphaelmeyer/host-sdk
-	rm -rf host-sdk/.done
-
 ################################################################################
 
 .PHONY: clean
-.PHONY: clean-yocto clean-sdk clean-base clean-host
+.PHONY: clean-yocto clean-sdk
 

@@ -1,6 +1,9 @@
-*.swp
-*.done
+/ybpi-yocto/.done
+/ybpi-sdk/.done
 
 /artifacts/
 /ybpi-sdk/sdk-installer.sh
+
+# vim, clion etc
+*.swp
 

@@ -1,4 +1,4 @@
-FROM raphaelmeyer/ybpi-base
+FROM raphaelmeyer/base:1.0.1
 
 MAINTAINER Raphael Meyer <raphael.meyer@bbv.ch>
 
@@ -20,4 +20,7 @@ USER user
 COPY ybpi-entrypoint.sh /
 ENTRYPOINT ["/ybpi-entrypoint.sh"]
 CMD ["/bin/bash"]
+
+VOLUME ["/workspace"]
+WORKDIR /workspace
 
