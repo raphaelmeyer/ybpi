@@ -85,6 +85,7 @@ clean-yocto:
 	-docker rm -v yocto-workspace
 	-docker rmi raphaelmeyer/ybpi-yocto
 	rm -rf ybpi-yocto/.done
+	rm -rf tools/.yocto-workspace.done
 
 clean-sdk:
 	-docker rmi raphaelmeyer/ybpi-sdk
