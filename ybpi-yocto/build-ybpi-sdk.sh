@@ -1,6 +1,6 @@
 #!/bin/bash
 
-YOCTO_RELEASE=fido
+YOCTO_RELEASE=jethro
 
 WORKDIR=/workspace
 

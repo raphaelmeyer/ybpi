@@ -4,7 +4,7 @@ all: ybpi-sdk yocto-image
 
 ################################################################################
 
-sdk = poky-glibc-x86_64-rpi-hwup-image-cortexa7hf-vfp-vfpv4-neon-toolchain-1.8.1.sh
+sdk = poky-glibc-x86_64-rpi-hwup-image-cortexa7hf-vfp-vfpv4-neon-toolchain-2.0.sh
 image = rpi-hwup-image-raspberrypi2.rpi-sdimg
 
 ybpi-sdk: ybpi-sdk/.done
