@@ -64,7 +64,7 @@ Change the `Makefile` and e.g. `build-ybpi-sdk.sh` in *ybpi-yocto* for your need
 
 ### docker containers
 
-* [ybpi-base](https://hub.docker.com/r/raphaelmeyer/ybpi-base/):
+* [base](https://hub.docker.com/r/raphaelmeyer/base/):
   The base container for *ybpi-sdk* and *ybpi-yocto*.
   Also used for data containers holding the build workspaces.
 * [ybpi-yocto](https://hub.docker.com/r/raphaelmeyer/ybpi-yocto/):
