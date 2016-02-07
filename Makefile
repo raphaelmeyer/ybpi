@@ -38,7 +38,7 @@ ybpi-sdk/.done: ybpi-sdk/Dockerfile ybpi-sdk/ybpi-entrypoint.sh artifacts/$(sdk)
 
 ################################################################################
 
-ybpi-release: check-tag ybpi-sdk # artifacts/$(image)
+ybpi-release: check-tag ybpi-sdk artifacts/$(image)
 	docker tag raphaelmeyer/ybpi-yocto raphaelmeyer/ypbi-yocto:$(tag)
 	docker tag raphaelmeyer/ybpi-sdk raphaelmeyer/ypbi-sdk:$(tag)
 	docker push raphaelmeyer/ybpi-yocto:$(tag)
