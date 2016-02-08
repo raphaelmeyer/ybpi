@@ -81,18 +81,21 @@ clean: clean-yocto clean-sdk
 	rm -rf artifacts/$(sdk)
 	rm -rf artifacts/$(image)
 
-clean-yocto:
-	-docker rm -v yocto-workspace
+clean-yocto: clean-yocto-workspace
 	-docker rmi raphaelmeyer/ybpi-yocto
 	rm -rf ybpi-yocto/.done
-	rm -rf tools/.yocto-workspace.done
 
 clean-sdk:
 	-docker rmi raphaelmeyer/ybpi-sdk
 	rm -rf ybpi-sdk/.done
 
+clean-yocto-workspace:
+	-docker rm -v yocto-workspace
+	rm -rf tools/.yocto-workspace.done
+
 ################################################################################
 
 .PHONY: clean
 .PHONY: clean-yocto clean-sdk
+.PHONY: clean-yocto-workspace
 
