@@ -1,14 +1,14 @@
 ################################################################################
 
-all: ybpi-sdk yocto-image
+all: ybpi-sdk ybpi-image
 
 ################################################################################
 
-sdk = poky-glibc-x86_64-rpi-hwup-image-cortexa7hf-vfp-vfpv4-neon-toolchain-2.0.1.sh
+sdk = poky-glibc-x86_64-rpi-hwup-image-cortexa7hf-vfp-vfpv4-neon-toolchain-2.0.sh
 image = rpi-hwup-image-raspberrypi2.rpi-sdimg
 
 ybpi-sdk: ybpi-sdk/.done
-yocto-image: artifacts/$(image)
+ybpi-image: artifacts/$(image)
 release: ybpi-release
 
 ################################################################################
@@ -38,7 +38,7 @@ ybpi-sdk/.done: ybpi-sdk/Dockerfile ybpi-sdk/ybpi-entrypoint.sh artifacts/$(sdk)
 
 ################################################################################
 
-ybpi-release: check-tag ybpi-sdk yocto-image
+ybpi-release: check-tag ybpi-sdk ybpi-image
 	docker tag raphaelmeyer/ybpi-yocto raphaelmeyer/ybpi-yocto:$(tag)
 	docker tag raphaelmeyer/ybpi-sdk raphaelmeyer/ybpi-sdk:$(tag)
 	docker push raphaelmeyer/ybpi-yocto:$(tag)
@@ -78,20 +78,19 @@ artifacts:
 ################################################################################
 
 clean: clean-yocto clean-sdk
-	rm -rf artifacts/$(sdk)
-	rm -rf artifacts/$(image)
+	rm -rf artifacts
 
 clean-yocto: clean-yocto-workspace
-	-docker rmi raphaelmeyer/ybpi-yocto
 	rm -rf ybpi-yocto/.done
+	-docker rmi raphaelmeyer/ybpi-yocto
 
 clean-sdk:
-	-docker rmi raphaelmeyer/ybpi-sdk
 	rm -rf ybpi-sdk/.done
+	-docker rmi raphaelmeyer/ybpi-sdk
 
 clean-yocto-workspace:
-	-docker rm -v yocto-workspace
 	rm -rf tools/.yocto-workspace.done
+	-docker rm -v yocto-workspace
 
 ################################################################################
 
