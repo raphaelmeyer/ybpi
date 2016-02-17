@@ -25,6 +25,12 @@ image_path = $(image_deploy)/$(image)
 
 ################################################################################
 
+ifdef tag
+ybpi-release-image = artifacts/$(patsubst %.rpi-sdimg,%_$(tag).rpi-sdimg,$(image))
+endif
+
+################################################################################
+
 ybpi-yocto/.done: ybpi-yocto/Dockerfile ybpi-yocto/build-ybpi-sdk.sh
 	-docker rmi raphaelmeyer/ybpi-yocto
 	docker build -t raphaelmeyer/ybpi-yocto ybpi-yocto
@@ -38,17 +44,21 @@ ybpi-sdk/.done: ybpi-sdk/Dockerfile ybpi-sdk/ybpi-entrypoint.sh artifacts/$(sdk)
 
 ################################################################################
 
-ybpi-release: check-tag ybpi-sdk ybpi-image
+ybpi-release: check-tag ybpi-sdk $(ybpi-release-image)
 	docker tag raphaelmeyer/ybpi-yocto raphaelmeyer/ybpi-yocto:$(tag)
 	docker tag raphaelmeyer/ybpi-sdk raphaelmeyer/ybpi-sdk:$(tag)
 	docker push raphaelmeyer/ybpi-yocto:$(tag)
 	docker push raphaelmeyer/ybpi-sdk:$(tag)
-	echo "TODO upload image to dropbox"
 
 check-tag:
 ifndef tag
 	$(error "Must specify a tag with make release tag=TAG")
 endif
+
+$(ybpi-release-image): ybpi-image
+	test -f $(ybpi-image)
+	cp $(ybpi-image) $(ybpi-image-release)
+	echo "TODO upload image to dropbox"
 
 ################################################################################
 
