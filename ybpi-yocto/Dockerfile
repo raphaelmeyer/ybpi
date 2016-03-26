@@ -15,6 +15,7 @@ RUN apt-get update && apt-get install -y \
   make \
   python \
   texinfo \
+  vim \
   wget
 
 COPY build-ybpi-sdk.sh /bin/
