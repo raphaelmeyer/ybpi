@@ -20,6 +20,7 @@ fi
 cd ${WORKDIR}
 if [ ! -d meta-ybpi ] ; then
   git clone https://github.com/raphaelmeyer/meta-ybpi.git
+  cd meta-ybpi && git checkout -b ${YOCTO_RELEASE} origin/${YOCTO_RELEASE}
 fi
 
 cd ${WORKDIR}
