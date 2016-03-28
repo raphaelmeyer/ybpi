@@ -56,8 +56,8 @@ ifndef tag
 endif
 
 $(ybpi-release-image): ybpi-image
-	test -f $(ybpi-image)
-	cp $(ybpi-image) $(ybpi-image-release)
+	test -f "artifacts/$(image)"
+	cp artifacts/$(image) $(ybpi-release-image)
 	echo "TODO upload image to dropbox"
 
 ################################################################################
