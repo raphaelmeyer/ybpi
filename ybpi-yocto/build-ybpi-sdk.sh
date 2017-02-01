@@ -1,7 +1,6 @@
 #!/bin/bash
 
-#YOCTO_RELEASE=krogoth # 2.1
-YOCTO_RELEASE=jethro # 2.0
+YOCTO_RELEASE=morty # 2.2
 
 WORKDIR=/workspace
 
@@ -23,19 +22,15 @@ if [ ! -d meta-ybpi ] ; then
   cd meta-ybpi && git checkout -b ${YOCTO_RELEASE} origin/${YOCTO_RELEASE}
 fi
 
-cd ${WORKDIR}
-if [ ! -d rpi-build ] ; then
-  git clone https://github.com/raphaelmeyer/rpi-build.git
-fi
-
 cd ${WORKDIR}/poky && git pull
 cd ${WORKDIR}/meta-raspberrypi && git pull
 cd ${WORKDIR}/meta-ybpi && git pull
-cd ${WORKDIR}/rpi-build && git pull
+
+mkdir -p ybpi-build
 
 cd ${WORKDIR}
 source poky/oe-init-build-env rpi-build
 
-bitbake rpi-hwup-image
-bitbake rpi-hwup-image -c populate_sdk
+#bitbake rpi-hwup-image
+#bitbake rpi-hwup-image -c populate_sdk
 
