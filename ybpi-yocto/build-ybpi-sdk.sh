@@ -4,7 +4,6 @@ YOCTO_RELEASE=morty # 2.2
 
 WORKDIR=/workspace
 YOCTODIR=${WORKDIR}/poky-${YOCTO_RELEASE}
-BUILDDIR=${WORKDIR}/rpi-build
 
 mkdir -p ${YOCTODIR}
 
@@ -30,16 +29,12 @@ cd ${YOCTODIR}/poky && git pull
 cd ${YOCTODIR}/meta-raspberrypi && git pull
 cd ${YOCTODIR}/meta-ybpi && git pull
 
-mkdir -p ${BUILDDIR}
-source ${YOCTODIR}/poky/oe-init-build-env ${BUILDDIR}
+cd ${WORKDIR}
+source ${YOCTODIR}/poky/oe-init-build-env
 
 bitbake-layers add-layer ${YOCTODIR}/meta-raspberrypi
 bitbake-layers add-layer ${YOCTODIR}/meta-ybpi
 
-#bitbake ybpi-raspberrypi2-image
-#bitbake ybpi-raspberrypi2-image -c populate_sdk
-
-### delete
-#bitbake rpi-hwup-image
-#bitbake rpi-hwup-image -c populate_sdk
+#bitbake ybpi-rpi2-image
+#bitbake ybpi-rpi2-image -c populate_sdk
 
