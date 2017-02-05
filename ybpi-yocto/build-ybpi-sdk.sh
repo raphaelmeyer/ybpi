@@ -35,6 +35,10 @@ source ${YOCTODIR}/poky/oe-init-build-env
 bitbake-layers add-layer ${YOCTODIR}/meta-raspberrypi
 bitbake-layers add-layer ${YOCTODIR}/meta-ybpi
 
+cat >${WORKDIR}/build/conf/auto.conf <<EOF
+MACHINE ?= "raspberrypi2"
+EOF
+
 #bitbake ybpi-rpi2-image
 #bitbake ybpi-rpi2-image -c populate_sdk
 
