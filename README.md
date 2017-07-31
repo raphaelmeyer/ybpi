@@ -6,12 +6,12 @@
 
 There is a pre-built yocto image and toolchain for [Raspberry Pi 2](https://www.raspberrypi.org/products/raspberry-pi-2-model-b/) model.
 
-The yocto image can be downloaded from [here](https://www.dropbox.com/s/g3zyylnekkcubur/rpi-hwup-image-raspberrypi2_2.2.0.rpi-sdimg?raw=1).
+The yocto image can be downloaded from [here](https://www.dropbox.com/s/tum9hzxbb5pnc2c/ybpi-rpi2-image-raspberrypi2_2.3.0.rpi-sdimg?raw=1).
 
 Install the image to a SD card and resize the root partition:
 
-    $ sudo dd if=rpi-hwup-image-raspberrypi2_2.2.0.rpi-sdimg of=/dev/sdX
-    $ sudo parted /dev/sdX resizepart 2 512M
+    $ sudo dd if=ybpi-rpi2-image-raspberrypi2_2.3.0.rpi-sdimg of=/dev/sdX
+    $ sudo parted /dev/sdX resizepart 2 1024M
     $ sudo resize2fs /dev/sdX2
 
 Connect the Raspberry Pi to the network and start up with the installed yocto image.
@@ -20,7 +20,7 @@ Connect the Raspberry Pi to the network and start up with the installed yocto im
 
 Create a data container as the build workspace.
 
-    $ docker create --name workspace raphaelmeyer/base:1.0.1
+    $ docker create --name workspace raphaelmeyer/base:1.3.0
 
 Setup a cmake project, e.g. in `/tmp/src` with a `CMakeLists.txt` and a `main.cc`.
 
@@ -37,8 +37,8 @@ Setup a cmake project, e.g. in `/tmp/src` with a `CMakeLists.txt` and a `main.cc
 
 Use the *ybpi-sdk* container to build the hello world application.
 
-    $ docker run --rm -t -v /tmp/src:/home/user/src:ro --volumes-from workspace raphaelmeyer/ybpi-sdk:2.2.0 cmake /home/user/src
-    $ docker run --rm -t -v /tmp/src:/home/user/src:ro --volumes-from workspace raphaelmeyer/ybpi-sdk:2.2.0 make
+    $ docker run --rm -t -v /tmp/src:/home/user/src:ro --volumes-from workspace raphaelmeyer/ybpi-sdk:2.3.0 cmake /home/user/src
+    $ docker run --rm -t -v /tmp/src:/home/user/src:ro --volumes-from workspace raphaelmeyer/ybpi-sdk:2.3.0 make
 
 Get the hello world from the workspace container and copy to the Raspberry Pi.
 
@@ -74,5 +74,4 @@ Change the `Makefile` and e.g. `build-ybpi-sdk.sh` in *ybpi-yocto* for your need
 
 ### yocto image
 
-[ybpi_image](https://www.dropbox.com/s/g3zyylnekkcubur/rpi-hwup-image-raspberrypi2_2.2.0.rpi-sdimg?raw=1)
-
+[ybpi_image](https://www.dropbox.com/s/tum9hzxbb5pnc2c/ybpi-rpi2-image-raspberrypi2_2.3.0.rpi-sdimg?raw=1)
