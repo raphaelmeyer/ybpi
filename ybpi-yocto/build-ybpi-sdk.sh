@@ -37,6 +37,11 @@ bitbake-layers add-layer ${YOCTODIR}/meta-ybpi
 
 cat >${WORKDIR}/build/conf/auto.conf <<EOF
 MACHINE ?= "raspberrypi2"
+
+GPU_MEM = "256"
+VIDEO_CAMERA = "1"
+ENABLE_SPI_BUS = "1"
+ENABLE_I2C = "1"
 EOF
 
 #bitbake ybpi-rpi2-image
