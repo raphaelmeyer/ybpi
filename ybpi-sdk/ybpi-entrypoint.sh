@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source /opt/poky/2.0.1/environment-setup-cortexa7hf-vfp-vfpv4-neon-poky-linux-gnueabi
+source /opt/poky/2.3.1/environment-setup-cortexa7hf-neon-vfpv4-poky-linux-gnueabi
 
 exec "$@"
 

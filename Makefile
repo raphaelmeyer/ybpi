@@ -4,8 +4,8 @@ all: ybpi-sdk ybpi-image
 
 ################################################################################
 
-sdk = poky-glibc-x86_64-rpi-hwup-image-cortexa7hf-vfp-vfpv4-neon-toolchain-2.0.1.sh
-image = rpi-hwup-image-raspberrypi2.rpi-sdimg
+sdk = poky-glibc-x86_64-ybpi-rpi2-image-cortexa7hf-neon-vfpv4-toolchain-2.3.1.sh
+image = ybpi-rpi2-image-raspberrypi2.rpi-sdimg
 
 ybpi-sdk: ybpi-sdk/.done
 ybpi-image: artifacts/$(image)
@@ -15,7 +15,7 @@ release: ybpi-release
 
 base_version = 1.3.0
 
-deploy = /workspace/rpi-build/tmp/deploy
+deploy = /workspace/build/tmp/deploy
 
 sdk_deploy = $(deploy)/sdk
 sdk_path = $(sdk_deploy)/$(sdk)
