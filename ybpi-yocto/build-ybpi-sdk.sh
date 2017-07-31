@@ -44,6 +44,6 @@ ENABLE_SPI_BUS = "1"
 ENABLE_I2C = "1"
 EOF
 
-#bitbake ybpi-rpi2-image
-#bitbake ybpi-rpi2-image -c populate_sdk
+bitbake ybpi-rpi2-image
+bitbake ybpi-rpi2-image -c populate_sdk
 

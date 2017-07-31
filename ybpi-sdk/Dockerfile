@@ -5,9 +5,10 @@ MAINTAINER Raphael Meyer <raphael.meyer@bbv.ch>
 USER root
 
 RUN apt-get update && apt-get install -y \
-  bzip2 \
   make \
-  python
+  ninja-build \
+  python \
+  xz-utils
 
 RUN apt-get update && apt-get install --no-install-recommends -y cmake
 
