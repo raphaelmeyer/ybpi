@@ -1,4 +1,4 @@
-FROM raphaelmeyer/base:1.2.0
+FROM raphaelmeyer/base:1.3.0
 
 MAINTAINER Raphael Meyer <raphael.meyer@bbv.ch>
 

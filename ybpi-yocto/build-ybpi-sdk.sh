@@ -1,6 +1,6 @@
 #!/bin/bash
 
-YOCTO_RELEASE=morty # 2.2
+YOCTO_RELEASE=pyro # 2.3
 
 WORKDIR=/workspace
 YOCTODIR=${WORKDIR}/poky-${YOCTO_RELEASE}

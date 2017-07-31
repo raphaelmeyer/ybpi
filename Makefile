@@ -13,7 +13,7 @@ release: ybpi-release
 
 ################################################################################
 
-base_version = 1.2.0
+base_version = 1.3.0
 
 deploy = /workspace/rpi-build/tmp/deploy
 
